@@ -1,6 +1,6 @@
 let runningTotal = 0;
 let buffer = "0";
-let previousOperator;
+let previousOperator = null;
 
 const screen = document.querySelector('.screen');
 
@@ -16,19 +16,25 @@ function buttonClick(value) {
 }
     // handles the symbols
 function handleSymbol(symbol) {
-    // if(symbol === 'C'){
-    //     buffer = '0';
-    //     runningTotal = 0;
-    // }
     // choosing between different operators
     switch(symbol) {
         case 'C':
             buffer = '0';
             runningTotal = 0;
         break;
+        case '=':
+            if(previousOperator === null){
+                    // need two number to do math
+                    return; 
+            }
+            flushOperation(parseInt(buffer));
+            previousOperator = null;
+            buffer = runningTotal;
+            runningTotal = 0;
+            break;
         case '+':
         case '-':
-        case '&times':
+        case '×':
         case '÷':
             handleMath(symbol);
         break; 
@@ -65,11 +71,11 @@ function flushOperation(intBuffer){
     if(previousOperator === '+'){
         runningTotal += intBuffer;
     }else if(previousOperator === '-'){
-        runningTotal -= '-';
-    }else if(previousOperator === '&times'){
-        runningTotal *= '&times';
+        runningTotal -= intBuffer;
+    }else if(previousOperator === '×'){
+        runningTotal *= intBuffer;
     }else{
-        runningTotal /= '&divide';
+        runningTotal /= intBuffer;
     }
 }
 
