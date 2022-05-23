@@ -16,15 +16,12 @@ function buttonClick(value) {
 }
     // handles the symbols
 function handleSymbol(symbol) {
-    if(symbol === 'C'){
-        buffer = '0';
-        runningTotal = 0;
-    }
-}
-    // handles the numbers
-function handleNumber(numberString) {
+    // if(symbol === 'C'){
+    //     buffer = '0';
+    //     runningTotal = 0;
+    // }
     // choosing between different operators
-    switch(value) {
+    switch(symbol) {
         case 'C':
             buffer = '0';
             runningTotal = 0;
@@ -32,15 +29,24 @@ function handleNumber(numberString) {
         case '+':
         case '-':
         case '&times':
-        case '&divide':
+        case '÷':
             handleMath(symbol);
         break; 
     }
 }
+    // handles the numbers
+function handleNumber(numberString) {
+    if(buffer === '0'){
+        buffer = numberString;
+    }else {
+        buffer += numberString;
+    }  
+}
+
 function handleMath() {
     if(buffer === '0'){
         // do nothing return statement
-        return
+        return;
     }
     const intBuffer = parseInt(buffer);
 
@@ -53,6 +59,18 @@ function handleMath() {
     previousOperator = symbol;
 
     buffer = '0';
+}
+
+function flushOperation(intBuffer){
+    if(previousOperator === '+'){
+        runningTotal += intBuffer;
+    }else if(previousOperator === '-'){
+        runningTotal -= '-';
+    }else if(previousOperator === '&times'){
+        runningTotal *= '&times';
+    }else{
+        runningTotal /= '&divide';
+    }
 }
 
 function init() {
