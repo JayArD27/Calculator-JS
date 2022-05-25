@@ -1,55 +1,30 @@
 let runningTotal = 0;
 let buffer = "0";
-let previousOperator = null;
+let previousOperator;
 
 const screen = document.querySelector('.screen');
 
 function buttonClick(value) {
-    if (isNaN(value)){
+    if (isNaN(parseInt(value))){
         //not number
         handleSymbol(value);
     }else {
         // number
         handleNumber(value);
     }
-    screen.innerText = buffer;
+    rerender();
 }
-    // handles the symbols
-function handleSymbol(symbol) {
-    // choosing between different operators
-    switch(symbol) {
-        case 'C':
-            buffer = '0';
-            runningTotal = 0;
-        break;
-        case '=':
-            if(previousOperator === null){
-                    // need two number to do math
-                    return; 
-            }
-            flushOperation(parseInt(buffer));
-            previousOperator = null;
-            buffer = runningTotal;
-            runningTotal = 0;
-            break;
-        case '+':
-        case '-':
-        case '×':
-        case '÷':
-            handleMath(symbol);
-        break; 
-    }
-}
-    // handles the numbers
-function handleNumber(numberString) {
-    if(buffer === '0'){
-        buffer = numberString;
+
+function handleNumber(value) {
+    if(buffer === "0"){
+        buffer = value;
     }else {
-        buffer += numberString;
+        buffer += value;
     }  
 }
 
-function handleMath() {
+function handleMath(value) {
+
     if(buffer === '0'){
         // do nothing return statement
         return;
@@ -62,7 +37,7 @@ function handleMath() {
     }else{
         flushOperation(intBuffer)
     }
-    previousOperator = symbol;
+    previousOperator = value;
 
     buffer = '0';
 }
@@ -78,6 +53,43 @@ function flushOperation(intBuffer){
         runningTotal /= intBuffer;
     }
 }
+
+    // handles the symbols
+    function handleSymbol(value) {
+        switch (value) {
+          case "C":
+            buffer = "0";
+            runningTotal = 0;
+            break;
+          case "=":
+            if (previousOperator === null) {
+              // need two numbers to do math
+              return;
+            }
+            flushOperation(parseInt(buffer));
+            previousOperator = null;
+            buffer = +runningTotal;
+            runningTotal = 0;
+            break;
+          case "←":
+            if (buffer.length === 1) {
+              buffer = "0";
+            } else {
+              buffer = buffer.substring(0, buffer.length - 1);
+            }
+            break;
+          case "+":
+          case "-":
+          case "×":
+          case "÷":
+            handleMath(value);
+            break;
+        }
+      }
+
+function rerender() {
+    screen.innerText = buffer;
+  }
 
 function init() {
     document.querySelector('.calc-buttons')
